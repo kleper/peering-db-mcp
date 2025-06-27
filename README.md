@@ -1,6 +1,7 @@
 # PeeringDB Location Server
 
-A Go-based MCP (Model Control Protocol) server that provides information about Internet Exchange (IX) locations for Autonomous System Numbers (ASNs) using the PeeringDB API.
+A Go-based MCP server that retrieves Internet Exchange (IX) locations for
+Autonomous System Numbers (ASNs) using the PeeringDB API.
 
 ## Features
 
@@ -12,48 +13,50 @@ A Go-based MCP (Model Control Protocol) server that provides information about I
 ## Prerequisites
 
 - Go 1.x or higher
-- Access to PeeringDB API
-- The following Go packages:
-    - github.com/mark3labs/mcp-go/mcp
-    - github.com/mark3labs/mcp-go/server
+- Access to the PeeringDB API
 
 ## Installation
 
-1. Clone the repository
-2. Install dependencies:
 ```bash
 go mod download
 ```
 
 ## Usage
 
-The server provides a single tool called `get_peering_locations` that accepts an ASN as input and returns formatted information about all IX locations where that AS is present.
+### Stdio MCP Server
 
-### Example Response Format
+Run the original MCP server which communicates via stdin/stdout:
 
-```
-🌐 IX Locations for AS64496:
-
-1. Example IX
-   📍 London
-   Status: 🟢 Operational
-
-2. Another IX
-   📍 Frankfurt
-   Status: 🔴 Not Operational
+```bash
+go run main.go
 ```
 
-### Status Indicators
+The tool `get_peering_locations` accepts an ASN and returns formatted
+information about all IX locations where that AS is present.
 
-- 🟢 Operational: The IX connection is active
-- 🔴 Not Operational: The IX connection is currently down or inactive
+### HTTP API
+
+An HTTP server exposing the same functionality is available in
+`server.go`. Create a `.env` file based on `.env.example` and set the
+`PORT` variable. Then start the API server:
+
+```bash
+go run server.go
+```
+
+Endpoints:
+
+- `GET /locations/{asn}` – returns peering locations for the given ASN
+  in a formatted text response.
+- `GET /openapi.json` – serves the OpenAPI specification describing the
+  API.
 
 ## API Integration
 
-The server integrates with two PeeringDB API endpoints:
+The service queries the following PeeringDB endpoints:
 
-1. `/api/net` - Used to resolve ASN to PeeringDB network ID
-2. `/api/netixlan` - Used to fetch IX location information
+1. `/api/net` – used to resolve an ASN to the PeeringDB network ID.
+2. `/api/netixlan` – fetches IX location information.
 
 ## Error Handling
 
@@ -65,13 +68,10 @@ The server handles several error cases:
 
 ## Contributing
 
-Contributions are welcome! Please ensure your code follows the existing structure and includes appropriate error handling.
-
+Contributions are welcome! Please ensure your code follows the existing
+structure and includes appropriate error handling.
 
 ## Note
 
-This tool requires access to the PeeringDB API. Please ensure you comply with PeeringDB's terms of service and API usage guidelines.
-
-# In Action
-
-![img.png](images/img.png)
+This tool requires access to the PeeringDB API. Please ensure you comply
+with PeeringDB's terms of service and API usage guidelines.
