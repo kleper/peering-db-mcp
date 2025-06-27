@@ -1,0 +1,36 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "PeeringDB MCP API",
+    "version": "1.0.0",
+    "description": "API to query IX locations for an ASN via PeeringDB"
+  },
+  "paths": {
+    "/locations/{asn}": {
+      "get": {
+        "summary": "Get IX locations for an ASN",
+        "parameters": [
+          {
+            "name": "asn",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "integer"},
+            "description": "Autonomous System Number"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Formatted location list",
+            "content": {
+              "text/plain": {
+                "schema": {"type": "string"}
+              }
+            }
+          },
+          "400": {"description": "Invalid request"},
+          "500": {"description": "Internal server error"}
+        }
+      }
+    }
+  }
+}
